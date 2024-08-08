@@ -4,14 +4,16 @@ import numpy as np
 
 st.title("Blood Cell Detection")
 
+
+with st.sidebar:
+    CONFIDENCE_THRESHOLD = st.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.6, step=0.01)
+
+
 # Constants.
 INPUT_WIDTH = 640
 INPUT_HEIGHT = 640
 SCORE_THRESHOLD = 0.11
 NMS_THRESHOLD = 0.45
-CONFIDENCE_THRESHOLD = 0.6
-
-# Text parameters.
 FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.7
 THICKNESS = 1
@@ -76,7 +78,7 @@ def post_process(input_image, outputs):
 
 
 if __name__ == '__main__':
-    classesFile = "coco.names"
+    classesFile = "models/coco.names"
     with open(classesFile, 'rt') as f:
         classes = f.read().rstrip('\n').split('\n')
 
@@ -88,7 +90,7 @@ if __name__ == '__main__':
             file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
             frame = cv2.imdecode(file_bytes, 1)
 
-            modelWeights = "best.onnx"
+            modelWeights = "models/new_model.onnx"
             net = cv2.dnn.readNet(modelWeights)
 
             detections = pre_process(frame, net)
