@@ -18,17 +18,17 @@ FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.7
 THICKNESS = 1
 
-# Colors.
 BLACK  = (0,0,0)
-BLUE   = (255,178,50)
-YELLOW = (0,255,255)
 
-def draw_label(im, label, x, y):
+COLORS = {1:(255, 0, 0),
+          2: (0, 255, 0),
+          0:(0, 0, 255)}
+
+def draw_label(im, label, x, y,color):
     """Draw text onto image at location."""
     text_size = cv2.getTextSize(label, FONT_FACE, FONT_SCALE, THICKNESS)
     dim, baseline = text_size[0], text_size[1]
-    cv2.rectangle(im, (x,y), (x + dim[0], y + dim[1] + baseline), (0,0,0), cv2.FILLED);
-    cv2.putText(im, label, (x, y + dim[1]), FONT_FACE, FONT_SCALE, YELLOW, THICKNESS, cv2.LINE_AA)
+    cv2.putText(im, label, (x, y + dim[1]), FONT_FACE, FONT_SCALE, color, THICKNESS, cv2.LINE_AA)
 
 
 
@@ -71,9 +71,10 @@ def post_process(input_image, outputs):
         top = box[1]
         width = box[2]
         height = box[3]
-        cv2.rectangle(input_image, (left, top), (left + width, top + height), BLUE, 3*THICKNESS)
+        color = COLORS[int((classes[class_ids[i]]).split(':')[0])]  
+        cv2.rectangle(input_image, (left, top), (left + width, top + height), color, 1*THICKNESS)
         label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
-        draw_label(input_image, label, left, top)
+        draw_label(input_image, label, left, top,color)
       return input_image
 
 
